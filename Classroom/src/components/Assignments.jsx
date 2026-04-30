@@ -30,7 +30,12 @@ const Assignments = ({ classId, isTeacher, token, userId, socket }) => {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
-            setAssignments(data);
+            if (Array.isArray(data)) {
+                setAssignments(data);
+            } else {
+                console.error("Assignments data is not an array:", data);
+                setAssignments([]);
+            }
         } catch (err) {
             console.error("Fetch assignments error:", err);
         }
@@ -153,7 +158,7 @@ const Assignments = ({ classId, isTeacher, token, userId, socket }) => {
                             )}
 
                             {isTeacher && (
-                                <p className="text-xs text-gray-400 mt-2">{ass.submissions.length} submissions</p>
+                                <p className="text-xs text-gray-400 mt-2">{ass.submissions?.length || 0} submissions</p>
                             )}
                         </div>
                     );
