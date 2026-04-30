@@ -56,6 +56,16 @@ function App() {
     });
   };
 
+  // ✅ NAVIGATION PROTECTION
+  useEffect(() => {
+    if (page === "dashboard" && !user) {
+      setPage("welcome");
+    }
+    if (page === "live-class" && (!user || !activeClassId)) {
+      setPage("dashboard");
+    }
+  }, [page, user, activeClassId]);
+
   return (
     <div className={darkMode ? "dark" : ""}>
       <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-black transition-all">
@@ -67,7 +77,7 @@ function App() {
         )}
 
         {/* ✅ PROTECTED DASHBOARD */}
-        {page === "dashboard" && user ? (
+        {page === "dashboard" && user && (
           <Dashboard
             user={user}
             darkMode={darkMode}
@@ -75,14 +85,10 @@ function App() {
             handleLogout={handleLogout}
             enterClass={enterClass}
           />
-        ) : (
-          page === "dashboard" && setPage("welcome")
         )}
 
-        {page === "live-class" && user && activeClassId ? (
+        {page === "live-class" && user && activeClassId && (
           <LiveClass classId={activeClassId} user={user} setPage={setPage} />
-        ) : (
-          page === "live-class" && setPage("dashboard")
         )}
       </div>
     </div>
